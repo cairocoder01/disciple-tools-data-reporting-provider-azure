@@ -1,11 +1,11 @@
 <?php
 /**
- * Plugin Name: Disciple Tools - Data Reporting Custom Provider
- * Plugin URI: https://github.com/cairocoder01/disciple-tools-data-reporting-provider-sample
- * Description: Disciple Tools - Data Reporting Custom Provider facilitates the addtion of custom providers to the Disciple Tools Data Reporting plugin
+ * Plugin Name: Disciple Tools - Data Reporting Azure Provider
+ * Plugin URI: https://github.com/cairocoder01/disciple-tools-data-reporting-provider-azure
+ * Description: Disciple Tools - Data Reporting Azure Provider add the Azure provider to the Disciple Tools Data Reporting plugin
  * Version:  0.1.0
  * Author URI: https://github.com/cairocoder01
- * GitHub Plugin URI: https://github.com/cairocoder01/disciple-tools-data-reporting-provider-sample
+ * GitHub Plugin URI: https://github.com/cairocoder01/disciple-tools-data-reporting-provider-azure
  * Requires at least: 4.7.0
  * (Requires 4.7+ because of the integration of the REST API at 4.7 and the security requirements of this milestone version.)
  * Tested up to: 5.5
@@ -16,40 +16,20 @@
  *          https://www.gnu.org/licenses/gpl-2.0.html
  */
 
-/**
- * Refactoring (renaming) this plugin as your own:
- * 1. @todo Refactor all occurrences of the name DT_Data_Reporting_Provider_Sample, dt_data_reporting_provider_sample, dt-data-reporting-provider-sample, data-reporting-provider-sample, and Data Reporting Provider Sample
- * 2. @todo Rename the `disciple-tools-data-reporting-provider-sample.php file.
- * 3. @todo Update the README.md and LICENSE
- * 4. @todo Update the default.pot file if you intend to make your plugin multilingual. Use a tool like POEdit
- * 5. @todo Change the translation domain to in the phpcs.xml your plugin's domain: @todo
- */
-
-/**
- * The starter plugin is equipped with:
- * 1. Wordpress style requirements
- * 2. Travis Continuous Integration
- * 3. Disciple Tools Theme presence check
- * 4. Remote upgrade system for ongoing updates outside the Wordpress Directory
- * 5. Multilingual ready
- * 6. PHP Code Sniffer support (composer) @use /vendor/bin/phpcs and /vendor/bin/phpcbf
- * 7. Starter Admin menu and options page with tabs.
- */
-
 if ( ! defined( 'ABSPATH' ) ) {
     exit; // Exit if accessed directly
 }
-$dt_data_reporting_provider_sample_required_dt_theme_version = '0.28.0';
+$dt_data_reporting_provider_azure_required_dt_theme_version = '0.28.0';
 
 /**
- * Gets the instance of the `DT_Data_Reporting_Provider_Sample_Plugin` class.
+ * Gets the instance of the `DT_Data_Reporting_Provider_Azure_Plugin` class.
  *
  * @since  0.1
  * @access public
  * @return object|bool
  */
-function dt_data_reporting_provider_sample_plugin() {
-    global $dt_data_reporting_provider_sample_required_dt_theme_version;
+function dt_data_reporting_provider_azure_plugin() {
+    global $dt_data_reporting_provider_azure_required_dt_theme_version;
     $wp_theme = wp_get_theme();
     $version = $wp_theme->version;
 
@@ -57,8 +37,8 @@ function dt_data_reporting_provider_sample_plugin() {
      * Check if the Disciple.Tools theme is loaded and is the latest required version
      */
     $is_theme_dt = strpos( $wp_theme->get_template(), "disciple-tools-theme" ) !== false || $wp_theme->name === "Disciple Tools";
-    if ( $is_theme_dt && version_compare( $version, $dt_data_reporting_provider_sample_required_dt_theme_version, "<" ) ) {
-        add_action( 'admin_notices', 'dt_data_reporting_provider_sample_plugin_hook_admin_notice' );
+    if ( $is_theme_dt && version_compare( $version, $dt_data_reporting_provider_azure_required_dt_theme_version, "<" ) ) {
+        add_action( 'admin_notices', 'dt_data_reporting_provider_azure_plugin_hook_admin_notice' );
         add_action( 'wp_ajax_dismissed_notice_handler', 'dt_hook_ajax_notice_handler' );
         return false;
     }
@@ -72,14 +52,14 @@ function dt_data_reporting_provider_sample_plugin() {
         require_once get_template_directory() . '/dt-core/global-functions.php';
     }
     /*
-     * Don't load the plugin on every rest request. Only those with the 'sample' namespace
+     * Don't load the plugin on every rest request. Only those with the 'azure' namespace
      */
     $is_rest = dt_is_rest();
     if ( ! $is_rest ){
-        return DT_Data_Reporting_Provider_Sample_Plugin::get_instance();
+        return DT_Data_Reporting_Provider_Azure_Plugin::get_instance();
     }
 }
-add_action( 'after_setup_theme', 'dt_data_reporting_provider_sample_plugin' );
+add_action( 'after_setup_theme', 'dt_data_reporting_provider_azure_plugin' );
 
 /**
  * Singleton class for setting up the plugin.
@@ -87,7 +67,7 @@ add_action( 'after_setup_theme', 'dt_data_reporting_provider_sample_plugin' );
  * @since  0.1
  * @access public
  */
-class DT_Data_Reporting_Provider_Sample_Plugin {
+class DT_Data_Reporting_Provider_Azure_Plugin {
 
     /**
      * Declares public variables
@@ -115,7 +95,7 @@ class DT_Data_Reporting_Provider_Sample_Plugin {
         static $instance = null;
 
         if ( is_null( $instance ) ) {
-            $instance = new dt_data_reporting_provider_sample_plugin();
+            $instance = new dt_data_reporting_provider_azure_plugin();
             $instance->setup();
             $instance->includes();
             $instance->setup_actions();
@@ -164,7 +144,7 @@ class DT_Data_Reporting_Provider_Sample_Plugin {
         $this->img_uri      = trailingslashit( $this->dir_uri . 'img' );
 
         // Admin and settings variables
-        $this->token             = 'dt_data_reporting_provider_sample_plugin';
+        $this->token             = 'dt_data_reporting_provider_azure_plugin';
         $this->version             = '0.1';
 
     }
@@ -190,17 +170,17 @@ class DT_Data_Reporting_Provider_Sample_Plugin {
              * Also, see the instructions for version updating to understand the steps involved.
              * @see https://github.com/DiscipleTools/disciple-tools-version-control/wiki/How-to-Update-the-Starter-Plugin
              * @todo enable this section with your own hosted file
-             * @todo An example of this file can be found in /includes/admin/disciple-tools-data-reporting-provider-sample-version-control.json
+             * @todo An example of this file can be found in /includes/admin/disciple-tools-data-reporting-provider-azure-version-control.json
              * @todo It is recommended to host this version control file outside the project itself. Github is a good option for delivering static json.
              */
 
             /***** @todo remove from here
 
-            $hosted_json = "https://raw.githubusercontent.com/DiscipleTools/disciple-tools-version-control/master/disciple-tools-data-reporting-provider-sample-version-control.json"; // @todo change this url
+            $hosted_json = "https://raw.githubusercontent.com/DiscipleTools/disciple-tools-version-control/master/disciple-tools-data-reporting-provider-azure-version-control.json"; // @todo change this url
             Puc_v4_Factory::buildUpdateChecker(
                 $hosted_json,
                 __FILE__,
-                'disciple-tools-data-reporting-provider-sample'
+                'disciple-tools-data-reporting-provider-azure'
             );
 
             ********* @todo to here */
@@ -215,8 +195,8 @@ class DT_Data_Reporting_Provider_Sample_Plugin {
             add_filter('plugin_row_meta', [$this, 'plugin_description_links'], 10, 4);
 
             add_filter('dt_data_reporting_providers', [$this, 'data_reporting_providers'], 10, 4);
-            add_action('dt_data_reporting_export_provider_sample-provider', [$this, 'data_reporting_export'], 10, 4);
-            add_action('dt_data_reporting_tab_provider_sample-provider', [$this, 'data_reporting_tab'], 10, 1);
+            add_action('dt_data_reporting_export_provider_azure', [$this, 'data_reporting_export'], 10, 4);
+            add_action('dt_data_reporting_tab_provider_azure', [$this, 'data_reporting_tab'], 10, 1);
         }
     }
 
@@ -226,13 +206,20 @@ class DT_Data_Reporting_Provider_Sample_Plugin {
      * @return mixed
      */
     public function data_reporting_providers($providers) {
-        $providers ['sample-provider'] = [
-            'name' => 'My Sample Provider',
+        $providers ['azure'] = [
+            'name' => 'Azure',
             'fields' => [
-                'sample_key' => [
-                    'label' => 'My Sample Key',
+                'azure_storage_account' => [
+                    'label' => 'Storage Account',
                     'type' => 'text',
-                    'helpText' => 'This is a sample key you need to authenticate with this provider'
+                ],
+                'azure_storage_account_key' => [
+                    'label' => 'Storage Account Key',
+                    'type' => 'text',
+                ],
+                'azure_storage_account_container' => [
+                    'label' => 'Storage Account Container',
+                    'type' => 'text',
                 ]
             ]
         ];
@@ -254,7 +241,7 @@ class DT_Data_Reporting_Provider_Sample_Plugin {
 
     public function data_reporting_tab( ) {
       ?>
-      <h2>My Sample Provider</h2>
+      <h2>My Azure Provider</h2>
       <p>Add here any getting started or how-to information that is needed for your provider</p>
       <?php
     }
@@ -308,7 +295,7 @@ class DT_Data_Reporting_Provider_Sample_Plugin {
      * @return void
      */
     public static function deactivation() {
-        delete_option( 'dismissed-dt-data-reporting-provider-sample' );
+        delete_option( 'dismissed-dt-data-reporting-provider-azure' );
     }
 
     /**
@@ -319,7 +306,7 @@ class DT_Data_Reporting_Provider_Sample_Plugin {
      * @return void
      */
     public function i18n() {
-        load_plugin_textdomain( 'dt_data_reporting_provider_sample_plugin', false, trailingslashit( dirname( plugin_basename( __FILE__ ) ) ). 'languages' );
+        load_plugin_textdomain( 'dt_data_reporting_provider_azure_plugin', false, trailingslashit( dirname( plugin_basename( __FILE__ ) ) ). 'languages' );
     }
 
     /**
@@ -330,7 +317,7 @@ class DT_Data_Reporting_Provider_Sample_Plugin {
      * @return string
      */
     public function __toString() {
-        return 'dt_data_reporting_provider_sample_plugin';
+        return 'dt_data_reporting_provider_azure_plugin';
     }
 
     /**
@@ -365,7 +352,7 @@ class DT_Data_Reporting_Provider_Sample_Plugin {
      * @access public
      */
     public function __call( $method = '', $args = array() ) {
-        _doing_it_wrong( "dt_data_reporting_provider_sample_plugin::" . esc_html( $method ), 'Method does not exist.', '0.1' );
+        _doing_it_wrong( "dt_data_reporting_provider_azure_plugin::" . esc_html( $method ), 'Method does not exist.', '0.1' );
         unset( $method, $args );
         return null;
     }
@@ -373,30 +360,30 @@ class DT_Data_Reporting_Provider_Sample_Plugin {
 // end main plugin class
 
 // Register activation hook.
-register_activation_hook( __FILE__, [ 'DT_Data_Reporting_Provider_Sample_Plugin', 'activation' ] );
-register_deactivation_hook( __FILE__, [ 'DT_Data_Reporting_Provider_Sample_Plugin', 'deactivation' ] );
+register_activation_hook( __FILE__, [ 'DT_Data_Reporting_Provider_Azure_Plugin', 'activation' ] );
+register_deactivation_hook( __FILE__, [ 'DT_Data_Reporting_Provider_Azure_Plugin', 'deactivation' ] );
 
-function dt_data_reporting_provider_sample_plugin_hook_admin_notice() {
-    global $dt_data_reporting_provider_sample_required_dt_theme_version;
+function dt_data_reporting_provider_azure_plugin_hook_admin_notice() {
+    global $dt_data_reporting_provider_azure_required_dt_theme_version;
     $wp_theme = wp_get_theme();
     $current_version = $wp_theme->version;
-    $message = __( "'Disciple Tools - Data Reporting Provider Sample' plugin requires 'Disciple Tools' theme to work. Please activate 'Disciple Tools' theme or make sure it is latest version.", "dt_data_reporting_provider_sample_plugin" );
+    $message = __( "'Disciple Tools - Data Reporting Provider Azure' plugin requires 'Disciple Tools' theme to work. Please activate 'Disciple Tools' theme or make sure it is latest version.", "dt_data_reporting_provider_azure_plugin" );
     if ( $wp_theme->get_template() === "disciple-tools-theme" ){
-        $message .= sprintf( esc_html__( 'Current Disciple Tools version: %1$s, required version: %2$s', 'dt_data_reporting_provider_sample_plugin' ), esc_html( $current_version ), esc_html( $dt_data_reporting_provider_sample_required_dt_theme_version ) );
+        $message .= sprintf( esc_html__( 'Current Disciple Tools version: %1$s, required version: %2$s', 'dt_data_reporting_provider_azure_plugin' ), esc_html( $current_version ), esc_html( $dt_data_reporting_provider_azure_required_dt_theme_version ) );
     }
     // Check if it's been dismissed...
-    if ( ! get_option( 'dismissed-dt-data-reporting-provider-sample', false ) ) { ?>
-        <div class="notice notice-error notice-dt-data-reporting-provider-sample is-dismissible" data-notice="dt-data-reporting-provider-sample">
+    if ( ! get_option( 'dismissed-dt-data-reporting-provider-azure', false ) ) { ?>
+        <div class="notice notice-error notice-dt-data-reporting-provider-azure is-dismissible" data-notice="dt-data-reporting-provider-azure">
             <p><?php echo esc_html( $message );?></p>
         </div>
         <script>
             jQuery(function($) {
-                $( document ).on( 'click', '.notice-dt-data-reporting-provider-sample .notice-dismiss', function () {
+                $( document ).on( 'click', '.notice-dt-data-reporting-provider-azure .notice-dismiss', function () {
                     $.ajax( ajaxurl, {
                         type: 'POST',
                         data: {
                             action: 'dismissed_notice_handler',
-                            type: 'dt-data-reporting-provider-sample',
+                            type: 'dt-data-reporting-provider-azure',
                             security: '<?php echo esc_html( wp_create_nonce( 'wp_rest_dismiss' ) ) ?>'
                         }
                     })

@@ -1,6 +1,5 @@
-# Disciple Tools Data Reporting Provider Sample
-Disciple Tools Data Reporting - Custom Provider facilitates the addtion of custom providers to the [Disciple Tools Data Reporting plugin](https://github.com/cairocoder01/disciple-tools-data-reporting).
-This basic plugin starter has some of the basic elements to quickly launch a custom provider.
+# Disciple Tools Data Reporting Provider Azure
+Disciple Tools Data Reporting - Azure Provider adds the Azure provider to the [Disciple Tools Data Reporting plugin](https://github.com/cairocoder01/disciple-tools-data-reporting).
 
 
 ### The starter plugin is equipped with:
@@ -13,7 +12,7 @@ This basic plugin starter has some of the basic elements to quickly launch a cus
 1. Starter Admin menu and options page with tabs.
 
 ### Refactoring this plugin as your own:
-1. Refactor all occurrences of the name `DT_Data_Reporting_Provider_Sample`, `dt_data_reporting_provider_sample`, `data-reporting-provider-sample`, and `Data Reporting Provider Sample` with your own plugin
-1. Rename the `disciple-tools-data-reporting-provider-sample.php files.
+1. Refactor all occurrences of the name `DT_Data_Reporting_Provider_Azure`, `dt_data_reporting_provider_azure`, `data-reporting-provider-azure`, and `Data Reporting Provider Azure` with your own plugin
+1. Rename the `disciple-tools-data-reporting-provider-azure.php files.
 1. Update the README.md and LICENSE
 1. Update the translation strings inside `default.pot` file with a multilingual software like POEdit, if you intend to make your plugin multilingual.

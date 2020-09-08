@@ -1,9 +1,9 @@
 {
-  "name": "Disciple Tools - Data Reporting Provider Sample",
+  "name": "Disciple Tools - Data Reporting Provider Azure",
   "version": "0.1.0",
-  "download_url": "https://github.com/cairocoder01/disciple-tools-data-reporting-provider-sample/releases/download/0.1.0/disciple-tools-data-reporting-provider-sample.zip",
+  "download_url": "https://github.com/cairocoder01/disciple-tools-data-reporting-provider-azure/releases/download/0.1.0/disciple-tools-data-reporting-provider-azure.zip",
   "sections": {
-    "description": "Disciple Tools - Data Reporting Provider Sample.",
+    "description": "Disciple Tools - Data Reporting Provider Azure.",
     "installation": "(Required) You must have Disciple.Tools Theme installed before using this plugin. Once Disciple.Tools is installed, you can use the normal Plugin system to install the plugin.",
     "changelog": ""
   },
@@ -17,7 +17,7 @@
   },
   "author": "cairocoder01",
   "author_homepage": "https://github.com/cairocoder01",
-  "homepage": "https://github.com/cairocoder01/disciple-tools-data-reporting-provider-sample-template",
-  "license_url": "https://github.com/cairocoder01/disciple-tools-data-reporting-provider-sample-template/blob/master/LICENSE",
+  "homepage": "https://github.com/cairocoder01/disciple-tools-data-reporting-provider-azure-template",
+  "license_url": "https://github.com/cairocoder01/disciple-tools-data-reporting-provider-azure-template/blob/master/LICENSE",
   "readme_url": ""
 }

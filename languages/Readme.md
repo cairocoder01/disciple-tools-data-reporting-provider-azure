@@ -2,4 +2,4 @@
 {translation-domain}-{localisation}.po
  
 ex:  
-dT_Data_Reporting_Provider_Sample_plugin.fr_FR.po
+dT_Data_Reporting_Provider_Azure_plugin.fr_FR.po

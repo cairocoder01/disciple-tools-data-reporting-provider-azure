@@ -224,6 +224,7 @@ class DT_Data_Reporting_Provider_Azure_Plugin {
     public function data_reporting_providers($providers) {
         $providers ['azure'] = [
             'name' => 'Azure',
+            'flatten' => true,
             'fields' => [
                 'azure_storage_account' => [
                     'label' => 'Storage Account',
@@ -253,19 +254,16 @@ class DT_Data_Reporting_Provider_Azure_Plugin {
    * @param array $config
    */
     public function data_reporting_export( $columns, $rows, $type, $config ) {
-        echo '<li>Sending to provider from hook</li>';
-        echo '<li>Items: ' . count($rows) . '</li>';
-        echo '<li>Config: ' . print_r($config, true) . '</li>';
         $storage_account_key = $config['azure_storage_account_key'];
         $storage_account = $config['azure_storage_account'];
         $storage_account_container = $config['azure_storage_account_container'];
-        $settings_link = 'admin.php?page='.$this->token.'&tab=settings';
+        $settings_link = 'admin.php?page=DT_Data_Reporting&tab=settings';
         if ( empty( $storage_account_key ) ) {
-            echo "<p>A Storage Account Key has not been set. Please update in <a href='$settings_link'>Settings</a></p>";
+            echo "<li class='error'>A Storage Account Key has not been set. Please update in <a href='$settings_link'>Settings</a></li>";
         } else if ( empty( $storage_account ) ) {
-            echo "<p>A Storage Account has not been set. Please update in <a href='$settings_link'>Settings</a></p>";
+            echo "<li class='error'>A Storage Account has not been set. Please update in <a href='$settings_link'>Settings</a></li>";
         } else if ( empty( $storage_account_container ) ) {
-            echo "<p>A Storage Account Container has not been set. Please update in <a href='$settings_link'>Settings</a></p>";
+            echo "<li class='error'>A Storage Account Container has not been set. Please update in <a href='$settings_link'>Settings</a></li>";
         } else {
             $columns = array_map(function ( $column ) { return $column['name']; }, $columns);
             // TODO: do not hardcode maxmemory value
@@ -278,7 +276,7 @@ class DT_Data_Reporting_Provider_Azure_Plugin {
             rewind($csv);
             $content = stream_get_contents($csv);
             // Azure specifics
-            $blob_name = "contacts_".strval(gmdate('Ymdhi', time())).".csv";
+            $blob_name = "{$type}_".strval(gmdate('Ymdhi', time())).".csv";
             $connectionString = "DefaultEndpointsProtocol=https;AccountName=".$storage_account.";AccountKey=".$storage_account_key.";EndpointSuffix=core.windows.net";
             $blobClient = MicrosoftAzure\Storage\Blob\BlobRestProxy::createBlobService($connectionString);
             // TODO: RBAC Support
@@ -287,11 +285,11 @@ class DT_Data_Reporting_Provider_Azure_Plugin {
             try {
               //Upload blob
               $blobClient->createBlockBlob($storage_account_container, $blob_name, $content);
-              echo '<div class="notice notice-success notice-dt-data-reporting is-dismissible" data-notice="dt-data-reporting"><p>'.$blob_name.' successfully uploaded to Azure Blob</p></div>';
+              echo "<li class='success'>$blob_name successfully uploaded to Azure Blob</li>";
             } catch(MicrosoftAzure\Storage\Common\Exceptions\ServiceException $e){
               $code = $e->getCode();
               $error_message = $e->getMessage();
-              echo $code.": ".$error_message."<br />";
+              echo "<li class='error'>$code: $error_message</li>";
             }
         }
     }

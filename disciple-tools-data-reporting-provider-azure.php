@@ -111,6 +111,22 @@ class DT_Data_Reporting_Provider_Azure_Plugin {
      * @return void
      */
     private function __construct() {
+        add_action( "admin_head", array( $this, "add_styles" ) );
+    }
+
+    function add_styles() {
+        echo '<style>
+            body.wp-admin.extensions-dt_page_DT_Data_Reporting
+            .pre-div {
+                background:#eee;
+                border:0 none;
+                width: 90%;
+                display: block;
+                font-family: monospace;
+                white-space: pre;
+                margin: 1em 0;
+            }
+          </style>';
     }
 
     /**
@@ -121,7 +137,7 @@ class DT_Data_Reporting_Provider_Azure_Plugin {
      * @return void
      */
     private function includes() {
-
+        require_once plugin_dir_path( __FILE__ ) . '/vendor/autoload.php';
     }
 
     /**
@@ -212,14 +228,17 @@ class DT_Data_Reporting_Provider_Azure_Plugin {
                 'azure_storage_account' => [
                     'label' => 'Storage Account',
                     'type' => 'text',
-                ],
-                'azure_storage_account_key' => [
-                    'label' => 'Storage Account Key',
-                    'type' => 'text',
+                    'helpText' => 'This is the Azure Storage Account Name (e.g., "discipletools")'
                 ],
                 'azure_storage_account_container' => [
                     'label' => 'Storage Account Container',
                     'type' => 'text',
+                    'helpText' => 'This is the Azure Storage Account Container Name (e.g., "discipletools")'
+                ],
+                'azure_storage_account_key' => [
+                    'label' => 'Storage Account Key',
+                    'type' => 'text',
+                    'helpText' => 'This is the key to authenticate with this Storage Account (https://docs.microsoft.com/en-us/azure/storage/common/storage-account-keys-manage?tabs=azure-portal#view-account-access-keys)'
                 ]
             ]
         ];
@@ -237,12 +256,225 @@ class DT_Data_Reporting_Provider_Azure_Plugin {
         echo '<li>Sending to provider from hook</li>';
         echo '<li>Items: ' . count($rows) . '</li>';
         echo '<li>Config: ' . print_r($config, true) . '</li>';
+        $storage_account_key = $config['azure_storage_account_key'];
+        $storage_account = $config['azure_storage_account'];
+        $storage_account_container = $config['azure_storage_account_container'];
+        $settings_link = 'admin.php?page='.$this->token.'&tab=settings';
+        if ( empty( $storage_account_key ) ) {
+            echo "<p>A Storage Account Key has not been set. Please update in <a href='$settings_link'>Settings</a></p>";
+        } else if ( empty( $storage_account ) ) {
+            echo "<p>A Storage Account has not been set. Please update in <a href='$settings_link'>Settings</a></p>";
+        } else if ( empty( $storage_account_container ) ) {
+            echo "<p>A Storage Account Container has not been set. Please update in <a href='$settings_link'>Settings</a></p>";
+        } else {
+            $columns = array_map(function ( $column ) { return $column['name']; }, $columns);
+            // TODO: do not hardcode maxmemory value
+            $csv = fopen('php://temp/maxmemory:'. (100*1024*1024), 'r+');
+            fputcsv($csv, $columns);
+            // loop over the rows, outputting them
+            foreach ($rows as $row ) {
+                fputcsv( $csv, $row );
+            }
+            rewind($csv);
+            $content = stream_get_contents($csv);
+            // Azure specifics
+            $blob_name = "contacts_".strval(gmdate('Ymdhi', time())).".csv";
+            $connectionString = "DefaultEndpointsProtocol=https;AccountName=".$storage_account.";AccountKey=".$storage_account_key.";EndpointSuffix=core.windows.net";
+            $blobClient = MicrosoftAzure\Storage\Blob\BlobRestProxy::createBlobService($connectionString);
+            // TODO: RBAC Support
+            //$aadtoken = "";
+            //$blobClient = MicrosoftAzure\Storage\Blob\BlobRestProxy::createBlobServiceWithTokenCredential($aadtoken, $connectionString);
+            try {
+              //Upload blob
+              $blobClient->createBlockBlob($storage_account_container, $blob_name, $content);
+              echo '<div class="notice notice-success notice-dt-data-reporting is-dismissible" data-notice="dt-data-reporting"><p>'.$blob_name.' successfully uploaded to Azure Blob</p></div>';
+            } catch(MicrosoftAzure\Storage\Common\Exceptions\ServiceException $e){
+              $code = $e->getCode();
+              $error_message = $e->getMessage();
+              echo $code.": ".$error_message."<br />";
+            }
+        }
     }
 
     public function data_reporting_tab( ) {
       ?>
-      <h2>My Azure Provider</h2>
-      <p>Add here any getting started or how-to information that is needed for your provider</p>
+        <script>
+          // see: https://www.30secondsofcode.org/blog/s/copy-text-to-clipboard-with-javascript
+          function copyText(elementId) {
+            const el = document.createElement('textarea');
+            el.value = document.getElementById(elementId).value;
+            el.setAttribute('readonly', '');
+            el.style.position = 'absolute';
+            el.style.left = '-9999px';
+            document.body.appendChild(el);
+            el.select();
+            document.execCommand('copy');
+            document.body.removeChild(el);
+          }
+        </script>
+
+        <br>
+        <table class="widefat">
+        <thead>
+          <tr><th>Run the following commands in <a href="https://docs.microsoft.com/en-us/azure/cloud-shell/overview">Azure Cloud Shell</a></th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <p>This plugin was built with the intention of using Microsoft Azure as its external data store from which to do reporting and analysis. As such, you can find below some info and examples of how you can duplicate that setup.</p>
+              <p>Using Azure, these resources should stay within the free usage limits, depending on your usage. You will need to add your credit card to your account, but as long as your usage isn&#39;t overly much, you shouldn&#39;t be billed for anything.</p>
+            </td>
+          </tr>
+        </tbody>
+        </table>
+        <br>
+
+        <table class="widefat">
+        <thead>
+          <tr>
+            <th>
+              1. Create Resource Group <i>(optional, if you choose to reuse an existing Resource Group)</i>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <div style="margin: 20px;">
+                <button onclick="copyText('AzResourceGroup');" type="button" class="button" style="float: right;">Copy 📋</button>
+                <input type="text"
+                  class="pre-div"
+                  id="AzResourceGroup"
+                  value='az group create --name discipletools --location "US East"'
+                />
+              </div>
+            </td>
+          </tr>
+        </tbody>
+        </table>
+        <br>
+
+        <table class="widefat">
+        <thead>
+          <tr>
+            <th>
+              2. Create Storage Account
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <div style="margin: 20px;">
+                <button onclick="copyText('AzStorageAccount')" type="button" class="button" style="float: right;">Copy 📋</button>
+                <input type="text"
+                  class="pre-div"
+                  id="AzStorageAccount"
+                  value='az storage account create --resource-group discipletools --name discipletools --location "US East" --sku Standard_ZRS --encryption-services blob'
+                />
+              </div>
+            </td>
+          </tr>
+        </tbody>
+        </table>
+        <br>
+
+        <table class="widefat">
+        <thead>
+          <tr>
+            <th>
+              3. Create Blob Container
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <div style="margin: 20px;">
+                <button onclick="copyText('AzStorageContainer')" type="button" class="button" style="float: right;">Copy 📋</button>
+                <input type="text"
+                  class="pre-div"
+                  id="AzStorageContainer"
+                  value='az storage container create --name discipletools --account-name discipletools'
+                />
+              </div>
+            </td>
+          </tr>
+        </tbody>
+        </table>
+        <br>
+
+        <table class="widefat">
+        <thead>
+          <tr>
+            <th>
+              4A. Provide Storage Account Key
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <div style="margin-left: 20px;">
+            <i>(<a href="https://docs.microsoft.com/en-us/azure/storage/common/storage-account-keys-manage?tabs=azure-portal#view-account-access-keys">https://docs.microsoft.com/en-us/azure/storage/common/storage-account-keys-manage?tabs=azure-portal#view-account-access-keys</a>)</i>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+        </table>
+        <br>
+
+        <table class="widefat">
+        <thead>
+          <tr>
+            <th>
+              4B. Create RBAC Role (coming soon, to replace need for providing storage account key)
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <div style="margin-left: 20px;">
+            <i>NOTE: (replace &lt;subscription&gt; with your Subscription)</i>
+              </div>
+              <div style="margin: 20px;">
+                <button onclick="copyText('AzRBAC')" type="button" class="button" style="float: right;">Copy 📋</button>
+                <input type="text"
+                  class="pre-div"
+                  id="AzRBAC"
+                  value='az ad sp create-for-rbac --name DISCIPLETOOLS --role "Storage Blob Data Contributor" --scopes /subscriptions/&lt;subscription&gt;/resourceGroups/discipletools/providers/Microsoft.Storage/storageAccounts/discipletools'
+                />
+              </div>
+            </td>
+          </tr>
+        </tbody>
+        </table>
+        <br>
+
+        <table class="widefat">
+        <thead>
+          <tr>
+            <th>
+              References
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <div style="margin: 20px;">
+                <ul>
+                  <li><a href="https://docs.microsoft.com/en-us/azure/storage/blobs/storage-quickstart-blobs-cli">https://docs.microsoft.com/en-us/azure/storage/blobs/storage-quickstart-blobs-cli</a></li>
+                  <li><a href="https://docs.microsoft.com/en-us/azure/role-based-access-control/built-in-roles">https://docs.microsoft.com/en-us/azure/role-based-access-control/built-in-roles</a></li>
+                </ul>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+        </table>
+        <br>
+
       <?php
     }
 

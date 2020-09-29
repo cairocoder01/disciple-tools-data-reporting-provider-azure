@@ -42,6 +42,7 @@
     <!-- TODO: enable these rules: -->
     <exclude name="WordPress.Files.FileName.InvalidClassFileName" />
     <exclude name="WordPress.WP.I18n.MissingTranslatorsComment" />
+    <exclude name="WordPress.WP.I18n.NonSingularStringLiteralText" />
     <exclude name="WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar" />
 
     <!-- We currently don't want these rules that WordPress imports: -->
@@ -139,8 +140,6 @@
     <exclude name="WordPress.Arrays.CommaAfterArrayItem.NoSpaceAfterComma" />
     <exclude name="WordPress.Arrays.CommaAfterArrayItem.SpaceAfterComma" />
     <exclude name="WordPress.Arrays.CommaAfterArrayItem.SpaceBeforeComma" />
-    <exclude name="Generic.Arrays.DisallowShortArraySyntax.Found"/>
-    <exclude name="WordPress.PHP.DisallowShortTernary.Found"/>
     <exclude name="WordPress.PHP.YodaConditions.NotYoda" />
     <!-- <exclude name="WordPress.WhiteSpace.CastStructureSpacing.NoSpaceBeforeOpenParenthesis" /> -->
     <!-- <exclude name="WordPress.WhiteSpace.ControlStructureSpacing.BlankLineAfterEnd" /> -->
@@ -220,6 +219,9 @@
   <!-- <rule ref="PSR2.Files.ClosingTag"/> -->
   <!-- <rule ref="Squiz.PHP.ForbiddenFunctions"/> -->
   <!-- <rule ref="Generic.Arrays.DisallowLongArraySyntax"/> -->
+  <rule ref="Generic.Arrays.DisallowShortArraySyntax">
+    <exclude name="Generic.Arrays.DisallowShortArraySyntax.Found" />
+  </rule>
 
 </ruleset>
 

@@ -114,7 +114,7 @@ class DT_Data_Reporting_Provider_Azure_Plugin {
         add_action( "admin_head", array( $this, "add_styles" ) );
     }
 
-    function add_styles() {
+    public function add_styles() {
         echo '<style>
             body.wp-admin.extensions-dt_page_DT_Data_Reporting
             .pre-div {
@@ -208,11 +208,11 @@ class DT_Data_Reporting_Provider_Azure_Plugin {
 
         if ( is_admin() ) {
             // adds links to the plugin description area in the plugin admin list.
-            add_filter('plugin_row_meta', [$this, 'plugin_description_links'], 10, 4);
+            add_filter( 'plugin_row_meta', [ $this, 'plugin_description_links' ], 10, 4 );
 
-            add_filter('dt_data_reporting_providers', [$this, 'data_reporting_providers'], 10, 4);
-            add_filter('dt_data_reporting_export_provider_azure', [$this, 'data_reporting_export'], 10, 4);
-            add_action('dt_data_reporting_tab_provider_azure', [$this, 'data_reporting_tab'], 10, 1);
+            add_filter( 'dt_data_reporting_providers', [ $this, 'data_reporting_providers' ], 10, 4 );
+            add_filter( 'dt_data_reporting_export_provider_azure', [ $this, 'data_reporting_export' ], 10, 4 );
+            add_action( 'dt_data_reporting_tab_provider_azure', [ $this, 'data_reporting_tab' ], 10, 1 );
         }
     }
 
@@ -221,7 +221,7 @@ class DT_Data_Reporting_Provider_Azure_Plugin {
      * @param $providers
      * @return mixed
      */
-    public function data_reporting_providers($providers) {
+    public function data_reporting_providers( $providers) {
         $providers ['azure'] = [
             'name' => 'Azure',
             'flatten' => true,
@@ -278,28 +278,28 @@ class DT_Data_Reporting_Provider_Azure_Plugin {
                 'message' => "A Storage Account Container has not been set. Please update in <a href='$settings_link'>Settings</a>",
             ];
         } else {
-            $columns = array_map(function ($column) {
+            $columns = array_map(function ( $column) {
                 return $column['name'];
             }, $columns);
             // TODO: do not hardcode maxmemory value
-            $csv = fopen('php://temp/maxmemory:' . (100 * 1024 * 1024), 'r+');
-            fputcsv($csv, $columns);
+            $csv = fopen( 'php://temp/maxmemory:' . ( 100 * 1024 * 1024 ), 'r+' );
+            fputcsv( $csv, $columns );
             // loop over the rows, outputting them
             foreach ($rows as $row) {
-                fputcsv($csv, $row);
+                fputcsv( $csv, $row );
             }
-            rewind($csv);
-            $content = stream_get_contents($csv);
+            rewind( $csv );
+            $content = stream_get_contents( $csv );
             // Azure specifics
-            $blob_name = "{$type}_" . strval(gmdate('Ymdhi', time())) . ".csv";
-            $connectionString = "DefaultEndpointsProtocol=https;AccountName=" . $storage_account . ";AccountKey=" . $storage_account_key . ";EndpointSuffix=core.windows.net";
-            $blobClient = MicrosoftAzure\Storage\Blob\BlobRestProxy::createBlobService($connectionString);
+            $blob_name = "{$type}_" . strval( gmdate( 'Ymdhi', time() ) ) . ".csv";
+            $connection_string = "DefaultEndpointsProtocol=https;AccountName=" . $storage_account . ";AccountKey=" . $storage_account_key . ";EndpointSuffix=core.windows.net";
+            $blob_client = MicrosoftAzure\Storage\Blob\BlobRestProxy::createBlobService( $connection_string );
             // TODO: RBAC Support
             //$aadtoken = "";
             //$blobClient = MicrosoftAzure\Storage\Blob\BlobRestProxy::createBlobServiceWithTokenCredential($aadtoken, $connectionString);
             try {
                 //Upload blob
-                $blobClient->createBlockBlob($storage_account_container, $blob_name, $content);
+                $blob_client->createBlockBlob( $storage_account_container, $blob_name, $content );
                 $result['success'] = true;
                 $result['messages'][] = [
                     'type' => 'success',
@@ -317,8 +317,8 @@ class DT_Data_Reporting_Provider_Azure_Plugin {
         return $result;
     }
 
-    public function data_reporting_tab( ) {
-      ?>
+    public function data_reporting_tab() {
+        ?>
         <script>
           // see: https://www.30secondsofcode.org/blog/s/copy-text-to-clipboard-with-javascript
           function copyText(elementId) {
@@ -496,7 +496,7 @@ class DT_Data_Reporting_Provider_Azure_Plugin {
         </table>
         <br>
 
-      <?php
+        <?php
     }
 
     /**

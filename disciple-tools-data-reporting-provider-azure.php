@@ -3,7 +3,7 @@
  * Plugin Name: Disciple Tools - Data Reporting Azure Provider
  * Plugin URI: https://github.com/cairocoder01/disciple-tools-data-reporting-provider-azure
  * Description: Disciple Tools - Data Reporting Azure Provider add the Azure provider to the Disciple Tools Data Reporting plugin
- * Version:  0.1.0
+ * Version:  1.0.0
  * Author URI: https://github.com/cairocoder01
  * GitHub Plugin URI: https://github.com/cairocoder01/disciple-tools-data-reporting-provider-azure
  * Requires at least: 4.7.0
@@ -19,7 +19,7 @@
 if ( ! defined( 'ABSPATH' ) ) {
     exit; // Exit if accessed directly
 }
-$dt_data_reporting_provider_azure_required_dt_theme_version = '0.28.0';
+$dt_data_reporting_provider_azure_required_dt_theme_version = '0.32.0';
 
 /**
  * Gets the instance of the `DT_Data_Reporting_Provider_Azure_Plugin` class.
@@ -161,7 +161,7 @@ class DT_Data_Reporting_Provider_Azure_Plugin {
 
         // Admin and settings variables
         $this->token             = 'dt_data_reporting_provider_azure_plugin';
-        $this->version             = '0.1';
+        $this->version             = '1.0.0';
 
     }
 
@@ -190,16 +190,12 @@ class DT_Data_Reporting_Provider_Azure_Plugin {
              * @todo It is recommended to host this version control file outside the project itself. Github is a good option for delivering static json.
              */
 
-            /***** @todo remove from here
-
-            $hosted_json = "https://raw.githubusercontent.com/DiscipleTools/disciple-tools-version-control/master/disciple-tools-data-reporting-provider-azure-version-control.json"; // @todo change this url
+            $hosted_json = "https://raw.githubusercontent.com/cairocoder01/disciple-tools-data-reporting-provider-azure/master/disciple-tools-data-reporting-provider-azure-version-control.json";
             Puc_v4_Factory::buildUpdateChecker(
                 $hosted_json,
                 __FILE__,
                 'disciple-tools-data-reporting-provider-azure'
             );
-
-            ********* @todo to here */
 
         }
 

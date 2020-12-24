@@ -3,12 +3,12 @@
  * Plugin Name: Disciple Tools - Data Reporting Azure Provider
  * Plugin URI: https://github.com/cairocoder01/disciple-tools-data-reporting-provider-azure
  * Description: Disciple Tools - Data Reporting Azure Provider add the Azure provider to the Disciple Tools Data Reporting plugin
- * Version:  1.0.0
+ * Version:  1.0.1
  * Author URI: https://github.com/cairocoder01
  * GitHub Plugin URI: https://github.com/cairocoder01/disciple-tools-data-reporting-provider-azure
  * Requires at least: 4.7.0
  * (Requires 4.7+ because of the integration of the REST API at 4.7 and the security requirements of this milestone version.)
- * Tested up to: 5.5
+ * Tested up to: 5.6
  *
  * @package Disciple_Tools
  * @link    https://github.com/DiscipleTools
@@ -161,7 +161,7 @@ class DT_Data_Reporting_Provider_Azure_Plugin {
 
         // Admin and settings variables
         $this->token             = 'dt_data_reporting_provider_azure_plugin';
-        $this->version             = '1.0.0';
+        $this->version             = '1.0.1';
 
     }
 

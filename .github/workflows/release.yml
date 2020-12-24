@@ -35,7 +35,7 @@ jobs:
 
     - name: Install dependencies
       if: steps.composer-cache.outputs.cache-hit != 'true'
-        run: composer install --no-dev --prefer-dist --no-progress --optimize-autoloader
+      run: composer install --no-dev --prefer-dist --no-progress --optimize-autoloader
       
     # Below borrowed from https://github.com/actions/upload-release-asset
     - name: Build project

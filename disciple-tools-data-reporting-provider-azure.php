@@ -205,11 +205,11 @@ class DT_Data_Reporting_Provider_Azure_Plugin {
         if ( is_admin() ) {
             // adds links to the plugin description area in the plugin admin list.
             add_filter( 'plugin_row_meta', [ $this, 'plugin_description_links' ], 10, 4 );
-
-            add_filter( 'dt_data_reporting_providers', [ $this, 'data_reporting_providers' ], 10, 4 );
-            add_filter( 'dt_data_reporting_export_provider_azure', [ $this, 'data_reporting_export' ], 10, 4 );
             add_action( 'dt_data_reporting_tab_provider_azure', [ $this, 'data_reporting_tab' ], 10, 1 );
         }
+
+        add_filter( 'dt_data_reporting_providers', [ $this, 'data_reporting_providers' ], 10, 4 );
+        add_filter( 'dt_data_reporting_export_provider_azure', [ $this, 'data_reporting_export' ], 10, 4 );
     }
 
     /**
